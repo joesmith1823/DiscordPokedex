@@ -1,6 +1,8 @@
 const fuzz = require('fuzzball');
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const config = require('./config.json');
+const pokedexToken = config.pokedexToken;
 
 const names = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran♀", "Nidorina", "Nidoqueen", "Nidoran♂", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch’d", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Sentret", "Furret", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Spinarak", "Ariados", "Crobat", "Chinchou", "Lanturn", "Pichu", "Cleffa", "Igglybuff", "Togepi", "Togetic", "Natu", "Xatu", "Mareep", "Flaaffy", "Ampharos", "Bellossom", "Marill", "Azumarill", "Sudowoodo", "Politoed", "Hoppip", "Skiploom", "Jumpluff", "Aipom", "Sunkern", "Sunflora", "Yanma", "Wooper", "Quagsire", "Espeon", "Umbreon", "Murkrow", "Slowking", "Misdreavus", "Unown", "Wobbuffet", "Girafarig", "Pineco", "Forretress", "Dunsparce", "Gligar", "Steelix", "Snubbull", "Granbull", "Qwilfish", "Scizor", "Shuckle", "Heracross", "Sneasel", "Teddiursa", "Ursaring", "Slugma", "Magcargo", "Swinub", "Piloswine", "Corsola", "Remoraid", "Octillery", "Delibird", "Mantine", "Skarmory", "Houndour", "Houndoom", "Kingdra", "Phanpy", "Donphan", "Porygon2", "Stantler", "Smeargle", "Tyrogue", "Hitmontop", "Smoochum", "Elekid", "Magby", "Miltank", "Blissey", "Raikou", "Entei", "Suicune", "Larvitar", "Pupitar", "Tyranitar", "Lugia", "Ho-Oh", "Celebi", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Poochyena", "Mightyena", "Zigzagoon", "Linoone", "Wurmple", "Silcoon", "Beautifly", "Cascoon", "Dustox", "Lotad", "Lombre", "Ludicolo", "Seedot", "Nuzleaf", "Shiftry", "Taillow", "Swellow", "Wingull", "Pelipper", "Ralts", "Kirlia", "Gardevoir", "Surskit", "Masquerain", "Shroomish", "Breloom", "Slakoth", "Vigoroth", "Slaking", "Nincada", "Ninjask", "Shedinja", "Whismur", "Loudred", "Exploud", "Makuhita", "Hariyama", "Azurill", "Nosepass", "Skitty", "Delcatty", "Sableye", "Mawile", "Aron", "Lairon", "Aggron", "Meditite", "Medicham", "Electrike", "Manectric", "Plusle", "Minun", "Volbeat", "Illumise", "Roselia", "Gulpin", "Swalot", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Numel", "Camerupt", "Torkoal", "Spoink", "Grumpig", "Spinda", "Trapinch", "Vibrava", "Flygon", "Cacnea", "Cacturne", "Swablu", "Altaria", "Zangoose", "Seviper", "Lunatone", "Solrock", "Barboach", "Whiscash", "Corphish", "Crawdaunt", "Baltoy", "Claydol", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Castform", "Kecleon", "Shuppet", "Banette", "Duskull", "Dusclops", "Tropius", "Chimecho", "Absol", "Wynaut", "Snorunt", "Glalie", "Spheal", "Sealeo", "Walrein", "Clamperl", "Huntail", "Gorebyss", "Relicanth", "Luvdisc", "Bagon", "Shelgon", "Salamence", "Beldum", "Metang", "Metagross", "Regirock", "Regice", "Registeel", "Latias", "Latios", "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Starly", "Staravia", "Staraptor", "Bidoof", "Bibarel", "Kricketot", "Kricketune", "Shinx", "Luxio", "Luxray", "Budew", "Roserade", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Burmy", "Wormadam", "Mothim", "Combee", "Gunther", "Pachirisu", "Buizel", "Floatzel", "Cherubi", "Cherrim", "Shellos", "Gastrodon", "Ambipom", "Drifloon", "Drifblim", "Buneary", "Lopunny", "Mismagius", "Honchkrow", "Glameow", "Purugly", "Chingling", "Stunky", "Skuntank", "Bronzor", "Bronzong", "Bonsly", "Mime Jr.", "Happiny", "Chatot", "Spiritomb", "Gible", "Gabite", "Garchomp", "Munchlax", "Riolu", "Lucario", "Hippopotas", "Hippowdon", "Skorupi", "Drapion", "Croagunk", "Toxicroak", "Carnivine", "Finneon", "Lumineon", "Mantyke", "Snover", "Abomasnow", "Weavile", "Magnezone", "Lickilicky", "Rhyperior", "Tangrowth", "Electivire", "Magmortar", "Togekiss", "Yanmega", "Leafeon", "Glaceon", "Gliscor", "Mamoswine", "Porygon-Z", "Gallade", "Probopass", "Dusknoir", "Froslass", "Rotom", "Uxie", "Mesprit", "Azelf", "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus", "Victini", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Patrat", "Watchog", "Lillipup", "Herdier", "Stoutland", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Pidove", "Tranquill", "Unfezant", "Blitzle", "Zebstrika", "Roggenrola", "Boldore", "Gigalith", "Woobat", "Swoobat", "Drilbur", "Excadrill", "Audino", "Timburr", "Gurdurr", "Conkeldurr", "Tympole", "Palpitoad", "Seismitoad", "Throh", "Sawk", "Sewaddle", "Swadloon", "Leavanny", "Venipede", "Whirlipede", "Scolipede", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Basculin", "Sandile", "Krokorok", "Krookodile", "Darumaka", "Darmanitan", "Maractus", "Dwebble", "Crustle", "Scraggy", "Scrafty", "Sigilyph", "Yamask", "Cofagrigus", "Tirtouga", "Carracosta", "Archen", "Archeops", "Trubbish", "Garbodor", "Zorua", "Zoroark", "Minccino", "Cinccino", "Gothita", "Gothorita", "Gothitelle", "Solosis", "Duosion", "Reuniclus", "Ducklett", "Swanna", "Vanillite", "Vanillish", "Vanilluxe", "Deerling", "Sawsbuck", "Emolga", "Karrablast", "Escavalier", "Foongus", "Amoonguss", "Frillish", "Jellicent", "Alomomola", "Joltik", "Galvantula", "Ferroseed", "Ferrothorn", "Klink", "Klang", "Klinklang", "Tynamo", "Eelektrik", "Eelektross", "Elgyem", "Beheeyem", "Litwick", "MadPoGoTracker", "Chandelure", "Axew", "Fraxure", "Haxorus", "Cubchoo", "Beartic", "Cryogonal", "Shelmet", "Accelgor", "Stunfisk", "Mienfoo", "Mienshao", "Druddigon", "Golett", "Golurk", "Pawniard", "Bisharp", "Bouffalant", "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Heatmor", "Durant", "Deino", "Zweilous", "Hydreigon", "Larvesta", "Volcarona", "Cobalion", "Terrakion", "Virizion", "Tornadus", "Thundurus", "Reshiram", "Zekrom ", "Landorus", "Kyurem", "Keldeo", "Meloetta", "Genesect", "Chespin", "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie", "Frogadier", "Greninja", "Bunnelby", "Diggersby", "Fletchling", "Fletchinder", "Talonflame", "Scatterbug", "Spewpa", "Vivillon", "Litleo", "Pyroar", "Flabebe", "Floette", "Florges", "Skiddo", "Gogoat", "Pancham", "Pangoro", "Furfrou", "Espurr", "Meowstic", "Honedge", "Doublade", "Aegislash", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Inkay", "Malamar", "Binacle", "Barbaracle", "Skrelp", "Dragalge", "Clauncher", "Clawitzer", "Helioptile", "Heliolisk", "Tyrunt", "Tyrantrum", "Amaura", "Aurorus", "Sylveon", "Hawlucha", "Dedenne", "Carbink", "Goomy", "Sliggoo", "Goodra", "Klefki", "Phantump", "Trevenant", "Pumpkaboo", "Gourgeist", "Bergmite", "Avalugg", "Noibat", "Noivern", "Xerneas", "Yveltal", "Zygarde", "Diancie", "Hoopa", "Volcanion", "Rowlet", "Dartrix", "Decidueye", "Litten", "Torracat", "Incineroar", "Popplio", "Brionne", "Primarina", "Pikipek", "Trumbeak", "Toucannon", "Yungoos", "Gumshoos", "Grubbin", "Charjabug", "Vikavolt", "Crabrawler", "Crabominable", "Oricorio", "Cutiefly", "Ribombee", "Rockruff", "Lycanroc", "Wishiwashi", "Mareanie", "Toxapex", "Mudbray", "Mudsdale", "Dewpider", "Araquanid", "Fomantis", "Lurantis", "Morelull", "Shiinotic", "Salandit", "Salazzle", "Stufful", "Bewear", "Bounsweet", "Steenee", "Tsareena", "Comfey", "Oranguru", "Passimian", "Wimpod", "Golisopod", "Sandygast", "Palossand", "Pyukumuku", "Type: Null", "Silvally", "Minior", "Komala", "Turtonator", "Togedemaru", "Mimikyu", "Bruxish", "Drampa", "Dhelmise", "Jangmo-o", "Hakamo-o", "Kommo-o", "Tapu Koko", "Tapu Lele", "Tapu Bulu", "Tapu Fini", "Cosmog", "Cosmoem", "Solgaleo", "Lunala", "Nihilego", "Buzzwole", "Pheromosa", "Xurkitree", "Celesteela", "Kartana", "Guzzlord", "Necrozma", "Magearna", "Marshadow"]
 
@@ -17,10 +19,19 @@ function interpretPoke(poke) {
     //Add shortcut names here.
     switch (poke) {
         case 'ttar':
-            poke = 'tyranituar';
+            poke = 'tyranitar';
             break;
         case 'zap':
             poke = 'zapdos';
+            break;
+        case 'gary':
+            poke = 'gyarados';
+            break;
+        case 'doompupper':
+            poke = 'houndour';
+            break;
+        case 'doomdoggo':
+            poke = 'houndoom';
             break;
     }
 
@@ -49,6 +60,7 @@ function interpretPoke(poke) {
 
 client.on('ready', () => {
     console.log('I am ready!');
+    client.user.setGame('?help | Usage info');
 });
 
 client.on('message', message => {
@@ -179,10 +191,10 @@ let pokemon = {
     62: undefined,
     63: undefined,
     64: undefined,
-    65: new Pokemon(65, 0xff494c, 'Psychic', 3, 'Mewto - (Confusion, Psycho Cut)/Shadow Ball\nTyranitar - Bite/(Crush, Stone Edge)\nAlakazam - (Confustion, Psycho Cut)/Shadow Ball', 'Bug, Dark, Ghost', 'Fight, Psychic', '**A/F** | Psycho Cut/Future Sight\n**A/B** | Confusion/Future Sight\n**A-/D** | Psycho Cut/Shadow Ball\n**A-/A** | Confusion/Shadow Ball\n**C/F** | Psycho Cut/Focus Blast\n**C/B** | Confusion/Focus Blast', 1649),
+    65: new Pokemon(65, 0xff494c, 'Psychic', 3, 'Mewtwo | (Confusion, Psycho Cut)/Shadow Ball\nTyranitar | Bite/(Crush, Stone Edge)\nAlakazam | (Confustion, Psycho Cut)/Shadow Ball', 'Bug, Dark, Ghost', 'Fight, Psychic', '**A/F** | Psycho Cut/Future Sight\n**A/B** | Confusion/Future Sight\n**A-/D** | Psycho Cut/Shadow Ball\n**A-/A** | Confusion/Shadow Ball\n**C/F** | Psycho Cut/Focus Blast\n**C/B** | Confusion/Focus Blast', 1649),
     66: undefined,
     67: undefined,
-    68: new Pokemon(68, 0xa50000, 'Fighting', 3, 'Mewto | (Confusion, Psycho Cut)/(Shadow Ball, Psychic)\nLugia | Extrasensory/(Future Sight, Sky Attack)\nMoltres | Fire Spin/Overheat', 'Fairy, Flying, Psychic', 'Bug, Rock, Dark', '**A/A** | Counter/Dynamic Punch\n**A-/B** | Counter/Close Combat\n**C/B** | Counter/Heavy Slam\n**C/B** | Bullet Punch/Dynamic Punch\n**D/D** | Bullet Punch/Close Combat\n**D/D** | Bullet Punch/Heavy Slam', 1650),
+    68: new Pokemon(68, 0xa50000, 'Fighting', 3, 'Mewtwo | (Confusion, Psycho Cut)/(Shadow Ball, Psychic)\nLugia | Extrasensory/(Future Sight, Sky Attack)\nMoltres | Fire Spin/Overheat', 'Fairy, Flying, Psychic', 'Bug, Rock, Dark', '**A/A** | Counter/Dynamic Punch\n**A-/B** | Counter/Close Combat\n**C/B** | Counter/Heavy Slam\n**C/B** | Bullet Punch/Dynamic Punch\n**D/D** | Bullet Punch/Close Combat\n**D/D** | Bullet Punch/Heavy Slam', 1650),
     69: undefined,
     70: undefined,
     71: undefined,
@@ -203,7 +215,7 @@ let pokemon = {
     86: undefined,
     87: undefined,
     88: undefined,
-    89: new Pokemon(89, 0xe064e0, 'Poison', 2, 'Mewto - (Confusion, Psycho Cut)/(Psychic, Shadow Ball)\nLugia - Extrasensory/Future Sight\nRhydon - Mud Slap/Earthquake\nGolem - (Mud Slap, Mud Shot)/Earthquake', 'Ground, Psychic', 'Bug, Grass, Fairy, Poison, Fight', '**A/A-** | Poison Jab/Gunk Shot\n**B/B** | Poison Jab/Sludge Wave\n**C/A-** | Infestation/Gunk Shot\n**C/A-** | Poison Jab/Dark Pulse\n**D/B** | Infestation/Sludge Wave\n**D/A** | Infestation/Dark Pulse', 1548),
+    89: new Pokemon(89, 0xe064e0, 'Poison', 2, 'Mewtwo | (Confusion, Psycho Cut)/(Psychic, Shadow Ball)\nLugia | Extrasensory/Future Sight\nRhydon | Mud Slap/Earthquake\nGolem | (Mud Slap, Mud Shot)/Earthquake', 'Ground, Psychic', 'Bug, Grass, Fairy, Poison, Fight', '**A/A-** | Poison Jab/Gunk Shot\n**B/B** | Poison Jab/Sludge Wave\n**C/A-** | Infestation/Gunk Shot\n**C/A-** | Poison Jab/Dark Pulse\n**D/B** | Infestation/Sludge Wave\n**D/A** | Infestation/Dark Pulse', 1548),
     90: undefined,
     91: undefined,
     92: undefined,
@@ -217,14 +229,14 @@ let pokemon = {
     100: undefined,
     101: undefined,
     102: undefined,
-    103: new Pokemon(103, 0x017208, 'Grass / Psychic', 2, 'Pinsir - (Fury Cutter, Bug Bite)/X-Scissor\nScizor - Fury Cutter/X-Scissor\nMoltres - Fire Spin/Overheat', 'Bug (x2), Fire, Dark, Flying, Poison, Ghost, Ice', 'Electric, Grass, Ground, Fight, Psychic, Water', '**A/B** | Extrasensory/Solar Beam\n**A-/C** | Bullet Seed/Solar Beam\n**B/C** | Extrasensory/Psychic\n**B/C** | Bullet Seed/Seed Bomb\n**C/B** | Extrasensory/Seed Bomb\n**C/D** | Bullet Seed/Psychic', 1666),
+    103: new Pokemon(103, 0x017208, 'Grass/Psychic', 2, 'Pinsir | (Fury Cutter, Bug Bite)/X-Scissor\nScizor | Fury Cutter/X-Scissor\nMoltres | Fire Spin/Overheat', 'Bug (x2), Fire, Dark, Flying, Poison, Ghost, Ice', 'Electric, Grass, Ground, Fight, Psychic, Water', '**A/B** | Extrasensory/Solar Beam\n**A-/C** | Bullet Seed/Solar Beam\n**B/C** | Extrasensory/Psychic\n**B/C** | Bullet Seed/Seed Bomb\n**C/B** | Extrasensory/Seed Bomb\n**C/D** | Bullet Seed/Psychic', 1666),
     104: undefined,
     105: undefined,
     106: undefined,
     107: undefined,
     108: undefined,
     109: undefined,
-    110: new Pokemon(110, 0xe064e0, 'Poison', 2, 'Mewto - (Confusioin, Psycho Cut)/(Psychic, Shadow Ball)\nLugia - Extrasensory/Future Sight\nMoltres - Fire Spin/Overheat', 'Ground, Psychic', 'Bug, Grass, Fairy, Poison, Fight', '**B/A** | Infestation/Sludge Bomb\n**B/D** | Tackle/Sludge Bomb\n**C/A** | Infestation/Shadow Ball\n**C/D** | Tackle/Shadow Ball\n**D/D** | Tackle/Dark Pulse\n**D/B** | Infestation/Dark Pulse', 1247),
+    110: new Pokemon(110, 0xe064e0, 'Poison', 2, 'Mewtwo | (Confusioin, Psycho Cut)/(Psychic, Shadow Ball)\nLugia | Extrasensory/Future Sight\nMoltres | Fire Spin/Overheat', 'Ground, Psychic', 'Bug, Grass, Fairy, Poison, Fight', '**B/A** | Infestation/Sludge Bomb\n**B/D** | Tackle/Sludge Bomb\n**C/A** | Infestation/Shadow Ball\n**C/D** | Tackle/Shadow Ball\n**D/D** | Tackle/Dark Pulse\n**D/B** | Infestation/Dark Pulse', 1247),
     111: undefined,
     112: new Pokemon(112, 0x7F8290, 'Ground/Rock', 4, 'Vaporeon | Water Gun/(Hydro Pump, Aqua Tail)\nMeganium | Razor Leaf/(Solar Beam, Petal Blizzard)\nPoliwrath | (Bubble, Rock Smash)/(Hydro Pump, Dynamic Punch)\nMachamp | (Counter, Karate Chop)/(Dynamic Punch, Close Combat, Cross Chop)', 'Grass (x2), Ground, Steel, Fight, Ice, Water (x2)', 'Electric (x2), Fire, Normal, Rock, Flying, Poison (x2)', '**A/C** - Frost Breath / Blizzard\n**A/B** - Frost Breath / Ice Beam\n**A-/F** - Water Gun / Hydro Pump\n**B/F** - Water Gun / Blizzard\n**B/D** - Water Gun / Ice Beam\n**B/C** - Frost Breath / Hydro Pump', 1886),
     113: undefined,
@@ -239,8 +251,8 @@ let pokemon = {
     122: undefined,
     123: undefined,
     124: undefined,
-    125: new Pokemon(125, 0xfff600, 'Electric', 2, 'Rhydon - Mud Slap/Earthquake\nGolem - (Mud Slap, Mud Shot)/Earthquake\nMewto - (Confusion, Psycho Cut)/(Psychic, Shadow Ball)', 'Ground', 'Electric, Flying, Steel', '**A/B** | Thunder Shock/Thunderbolt\n**B/D** | Thunder Shock/Thunder\n**B/C** | Thunder Shock/Thunder Punch\n**B/A** | Low Kick/Thunderbolt\n**C/D** | Low Kick/Thunder\n**C/A** | Low Kick/Thunder Punch', 1255),
-    126: new Pokemon(126, 0xff7b00, 'Fire', 2, 'Vaporeon - Water Gun/(Hyrdro Pump, Aqua Tail)\nMewto - (Confusion, Psycho Cut)/(Psychic, Shadow Ball)\nOmastar - (Rock Throw, Water Gun)/(Rock Slide, Hydro Pump, Rock Blast)', 'Rock, Ground, Water', 'Bug, Fire, Grass, Fairy, Steel, Ice', '**A/A** | Ember/Flamethrower\n**A/D** | Ember/Fire Blast\n**B/B** | Ember/Fire Punch\n**B/A** | Karate Chop/Flamethrower\n**B/B** | Karate Chop/Fire Punch\n**C/C** | Karate Chop/Fire Blast', 1288),
+    125: new Pokemon(125, 0xfff600, 'Electric', 2, 'Rhydon | Mud Slap/Earthquake\nGolem | (Mud Slap, Mud Shot)/Earthquake\nMewtwo | (Confusion, Psycho Cut)/(Psychic, Shadow Ball)', 'Ground', 'Electric, Flying, Steel', '**A/B** | Thunder Shock/Thunderbolt\n**B/D** | Thunder Shock/Thunder\n**B/C** | Thunder Shock/Thunder Punch\n**B/A** | Low Kick/Thunderbolt\n**C/D** | Low Kick/Thunder\n**C/A** | Low Kick/Thunder Punch', 1255),
+    126: new Pokemon(126, 0xff7b00, 'Fire', 2, 'Vaporeon | Water Gun/(Hyrdro Pump, Aqua Tail)\nMewtwo | (Confusion, Psycho Cut)/(Psychic, Shadow Ball)\nOmastar | (Rock Throw, Water Gun)/(Rock Slide, Hydro Pump, Rock Blast)', 'Rock, Ground, Water', 'Bug, Fire, Grass, Fairy, Steel, Ice', '**A/A** | Ember/Flamethrower\n**A/D** | Ember/Fire Blast\n**B/B** | Ember/Fire Punch\n**B/A** | Karate Chop/Flamethrower\n**B/B** | Karate Chop/Fire Punch\n**C/C** | Karate Chop/Fire Blast', 1288),
     127: undefined,
     128: undefined,
     129: new Pokemon(129, 0x0902e5, 'Water', 1, 'N/A', 'Electric, Grass', 'Fire, Steel, Ice, Water', 'N/A', 125),
@@ -248,9 +260,9 @@ let pokemon = {
     131: new Pokemon(131, 0x57A6D7, 'Ice/Water', 4, 'Machamp | (Counter, Karate Chop)/(Dynamic Punch, Close Combat, Cross Chop)\nMewtwo | (Confusion, Psycho Cut)/(Focus Blast, Shadow Ball)\nZapdos | Charge Beam/(Thunderbolt, Zap Cannon)', 'Electric, Grass, Rock, Fight', 'Ice (x2), Water', '**A/C** | Frost Breath/Blizzard\n**A/B** | Frost Breath/Ice Beam\n**A-/F** | Water Gun/Hydro Pump\n**B/F** | Water Gun/Blizzard\n**B/D** | Water Gun/Ice Beam\n**B/C** | Frost Breath/Hydro Pump', 1487),
     132: undefined,
     133: undefined,
-    134: new Pokemon(134, 0x0902e5, 'Water', 3, 'Zapdos - Charge Beam/(Thunderbolt, Zap Cannon)\nExeggutor | (Bullet Seed, Confusion, Extrasensory)/(Solar Beam, Seed Bomb)\nMewto | (Confusion, Psycho Cut)/(Psychic, Shadow Ball)', 'Electric, Grass', 'Fire, Steel, Ice, Water', '**A/A** | Water Gun/Hydro Pump\n**A-/A-** | Water Gun/Aqua Tail\n**B/B** | Water Gun/Water Pulse', 1804),
-    135: new Pokemon(135, 0xfff600, 'Electric', 3, 'Rhydon - Mud Slap/Earthquake\nGolem - (Mud Slap, Mud Shot)/Earthquake\nDonphan - Counter/Earthquake', 'Ground', 'Electric, Flying, Steel', '**A/D** | Thunder Shock/Thunderbolt\n**A-/D** | Thunder Shock/Discharge\n**A-/F** | Thunder Shock/Thunder\n**B/A-** | Volt Switch/Thunderbolt\n**B/A** | Volt Switch/Discharge\n**C/B** | Volt Switch/Thunder', 1560),
-    136: new Pokemon(136, 0xff7b00, 'Fire', 3, 'Omastar - (Water Gun, Rock Throw)/(Hydro Pump, Rock Slide, Rock Blast)\nMewto - (Confusion, Psycho Cut)/(Psychic, Shadow Ball)\nGolem - (Mud Slap, Rock Throw, Mud Shot)/(Stone Edge, Earthquake)', 'Rock, Ground, Water', 'Bug, Fire, Grass, Fairy, Steel, Ice', '**A/B** | Fire Spin/Overheat\n**A-/C** | Fire Spin/Fire Blast\n**A-/A** | Fire Spin/Flamethrower\n**B/C** | Ember/Overheat\n**B/C** | Ember/Fire Blast\n**B/B** | Ember/Flamethrower', 1659),
+    134: new Pokemon(134, 0x0902e5, 'Water', 3, 'Zapdos | Charge Beam/(Thunderbolt, Zap Cannon)\nExeggutor | (Bullet Seed, Confusion, Extrasensory)/(Solar Beam, Seed Bomb)\nMewtwo | (Confusion, Psycho Cut)/(Psychic, Shadow Ball)', 'Electric, Grass', 'Fire, Steel, Ice, Water', '**A/A** | Water Gun/Hydro Pump\n**A-/A-** | Water Gun/Aqua Tail\n**B/B** | Water Gun/Water Pulse', 1804),
+    135: new Pokemon(135, 0xfff600, 'Electric', 3, 'Rhydon | Mud Slap/Earthquake\nGolem | (Mud Slap, Mud Shot)/Earthquake\nDonphan | Counter/Earthquake', 'Ground', 'Electric, Flying, Steel', '**A/D** | Thunder Shock/Thunderbolt\n**A-/D** | Thunder Shock/Discharge\n**A-/F** | Thunder Shock/Thunder\n**B/A-** | Volt Switch/Thunderbolt\n**B/A** | Volt Switch/Discharge\n**C/B** | Volt Switch/Thunder', 1560),
+    136: new Pokemon(136, 0xff7b00, 'Fire', 3, 'Omastar | (Water Gun, Rock Throw)/(Hydro Pump, Rock Slide, Rock Blast)\nMewtwo | (Confusion, Psycho Cut)/(Psychic, Shadow Ball)\nGolem | (Mud Slap, Rock Throw, Mud Shot)/(Stone Edge, Earthquake)', 'Rock, Ground, Water', 'Bug, Fire, Grass, Fairy, Steel, Ice', '**A/B** | Fire Spin/Overheat\n**A-/C** | Fire Spin/Fire Blast\n**A-/A** | Fire Spin/Flamethrower\n**B/C** | Ember/Overheat\n**B/C** | Ember/Fire Blast\n**B/B** | Ember/Flamethrower', 1659),
     137: undefined,
     138: undefined,
     139: undefined,
@@ -359,7 +371,7 @@ let pokemon = {
     242: undefined,
     243: new Pokemon(243, 0xF5CC54, "Electric", 5, "Golem | (Mud Slap, Mud Shot, Rock Throw)/Earthquake\nRhydon | Mud Slap/Earthquake", "Ground", "Electric, Flying, Steel", "**A** | Thunder Shock/Wild Charge\n**A** | Volt Switch/Wild Charge\n**A-** | Thunder Shock/Thunderbolt\n**A-** | Volt Switch/Thunderbolt\n**B** | Thunder Shock/Thunder\n**B** | Volt Switch/Thunder", 1913),
     244: new Pokemon(244, 0xff7b00, 'Fire', 5, 'Omastar | (Rock Throw, Water Gun)/(Rock Slide, Rock Blast, Hydro Pump)\nVaporeon | Water Gun/(Aqua Tail, Hydro Pump)\nGolem | Mud Slap/Stone Edge, Mud Shot/Rock Blast, Rock Throw/Earthquake', 'Rock, Ground, Water', 'Bug, Fire, Grass, Fairy, Steel, Ice', '**A** | Fire Spin/Overheat\n**A-** | Fire Fang/Overheat\n**A-** | Fire Spin/Flamethrower\n**B** | Fire Fang/Flamethrower\n**B-** | Fire Spin/Fire Blast\n**C** | Fire Fang/Fire Blast', 1930),
-    245: new Pokemon(245, 0x0902e5, 'Water', 5, 'Raikou - Thunder Shock/Wild Charge\nZapdos - Charge Beam/(Thunderbolt, Zap Cannon)\nExeggutor - (Confusion,Extrasensory, Bullet Seed)/(Solar Beam, Seed Bomb)', 'Electric, Grass', 'Fire, Steel, Ice Water', '**A** | Hidden Power/Hydro Pump\n**A-** | Extrasensory/Hydro Pump\n**B** | Hidden Power/Bubble Beam\n**B-** | Extrasensory/Bubble Beam\n**B-** | Hidden Power/Water Pulse\n**C** | Extrasensory/Water Pulse', 1613),
+    245: new Pokemon(245, 0x0902e5, 'Water', 5, 'Raikou | Thunder Shock/Wild Charge\nZapdos | Charge Beam/(Thunderbolt, Zap Cannon)\nExeggutor | (Confusion,Extrasensory, Bullet Seed)/(Solar Beam, Seed Bomb)', 'Electric, Grass', 'Fire, Steel, Ice, Water', '**A** | Hidden Power/Hydro Pump\n**A-** | Extrasensory/Hydro Pump\n**B** | Hidden Power/Bubble Beam\n**B-** | Extrasensory/Bubble Beam\n**B-** | Hidden Power/Water Pulse\n**C** | Extrasensory/Water Pulse', 1613),
     246: undefined,
     247: undefined,
     248: new Pokemon(248, 0xa4b68e, "Dark/Rock", 4, "Machamp | (Counter, Karate Chop)/(Dynamic Punch, Close Combat, Cross Chop)\nPoliwrath | (Rock Smash, Bubble)/Dynamic Punch", "Bug, Grass, Fairy, Ground, Steel, Fight (x2), Water", "Fire, Normal, Dark, Flying, Poison, Ghost, Psychic (x2)", "**A/C** | Bite/Crunch\n**A/C** | Bite/Stone Edge\n**C/D** | Bite/Fire Blast\n**C/A** | Iron Tail/Crunch\n**C/A** | Iron Tail/Stone Edge\n**D/B** | Iron Tail/Fire Blast", 2097),
@@ -530,7 +542,7 @@ let pokemon = {
     413: undefined,
     414: undefined,
     415: undefined,
-    416: new Pokemon(416, 0xa50000, 'Fight/Steel', 10, 'Psst... NONE', 'Crying Daughters', 'Begging/Whining Kids', '**A/A** | Sonic Yell/Embarrassing Dance Moves\n**A/A** | The Arnold/Whooping Butt\n**A/A** | Close Combat/Submission\n**A/A** | Morning Breath/Fake Sleeping', Over 9000),
+    416: new Pokemon(416, 0xa50000, 'Fight/Steel', 10, 'Psst... NONE', 'Crying Daughters', 'Begging/Whining Kids', '**A/A** | Sonic Yell/Embarrassing Dance Moves\n**A/A** | The Arnold/Whooping Butt\n**A/A** | Close Combat/Submission\n**A/A** | Morning Breath/Fake Sleeping', 'Over 9000'),
     417: undefined,
     418: undefined,
     419: undefined,
@@ -922,8 +934,12 @@ let pokemon = {
 
 
 client.on('message', message => {
+    // Help
+    if (message.content.toLowerCase() === '?help') {
+        message.author.createDM().then((dm) => { dm.send("Hi, thanks for using the automated Pokedex bot!\n\nI can provide quick information on different Pokemon types as well as specific Pokemon.\n\nFor information on Pokemon types, use commands `?type`, ie. `?water` will return important information on water type Pokemon.\n\nFor information on specific Pokemon, use commands `?pokemon` or `?pokemon id`, ie. `?articuno` and/or `?144` will both return important information on Articuno.") }).catch(console.error)
+    }
     //only do something if it starts with a ? and doesn't come from self.
-    if (message.content.startsWith('?') && message.author.id != client.user.id) {
+    else if (message.content.startsWith('?') && message.author.id != client.user.id) {
         console.log("Pokedex from " + message.author.username + ":\t" + message.content);
 
         //Is it a type?
@@ -946,4 +962,4 @@ client.on('message', message => {
 });
 
 
-client.login('Your Token Here');
+client.login(pokedexToken);
